@@ -98,49 +98,57 @@
                 </div>
 				
 				<div class="col-lg-6">
-                    <form name="emailForm" action="thank-you.php" method="post" onsubmit="return validateForm()">
-                        <div class="form-group mb-2">
-                            <label for="name">Name</label>
-                            <input type="text" class="form-control" id="name" name="yourname" placeholder="Enter your name" required>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" name="youremail" placeholder="Enter your email" required>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="mobile">Mobile</label>
-                            <input type="tel" class="form-control" id="mobile" name="yourphone"  placeholder="Enter your mobile number" pattern="^\+?[0-9]{7,15}$"  maxlength="15" required>
+                   <form name="emailForm" action="https://your-worker-name.youraccount.workers.dev" method="POST" onsubmit="return validateForm()">
+                    <div class="form-group mb-2">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="name" name="yourname" placeholder="Enter your name" required>
+                    </div>
 
-<!--  <input type="number" class="form-control" id="mobile" name="yourphone" placeholder="Enter your mobile number" pattern="\d*" maxlength="15" required-->
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="subject">Subject</label>
-                            <input type="text" class="form-control" id="subject" name="yoursubject" placeholder="Enter the subject" required>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="message">Message</label>
-                            <textarea class="form-control" id="message" rows="5" maxlength="200" name="yourmessage" placeholder="Enter your message" required></textarea>
-                        </div>
-                    
-                        <!-- Honeypot Field (Bots will fill it, humans won't) -->
-                        <div class="honeypot-field">
-                            <label for="honeypot">Leave this field empty</label>
-                            <input type="text" id="honeypot" name="honeypot" autocomplete="off">
-                        </div>
-                    
-                        <!-- Hidden Fields -->
-                        <input type="hidden" name="ip_address" id="ip_address">
-                        <input type="hidden" name="timestamp" id="timestamp">
-                        <input type="hidden" name="js_challenge" id="js_challenge">
-                    
-                        <!-- Google reCAPTCHA -->
-                        <div class="form-group mb-2">
-                            <div class="g-recaptcha" data-sitekey="6Le8E-QqAAAAAD4LJi0YgzguW4L6L4eSBqpwUyDf"></div>
-                        </div>
-                    
-                        <button type="submit" class="btn btn-primary" name="submit">Submit</button>
-                        <button type="reset" class="btn btn-secondary" name="reset">Cancel</button>
+                    <div class="form-group mb-2">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="youremail" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label for="mobile">Mobile</label>
+                        <input type="tel" class="form-control" id="mobile" name="yourphone"
+                        placeholder="Enter your mobile number" pattern="^\+?[0-9]{7,15}$"
+                        maxlength="15" required>
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label for="subject">Subject</label>
+                        <input type="text" class="form-control" id="subject" name="yoursubject" placeholder="Enter the subject" required>
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label for="message">Message</label>
+                        <textarea class="form-control" id="message" rows="5" maxlength="200" name="yourmessage"
+                        placeholder="Enter your message" required></textarea>
+                    </div>
+
+                    <!-- Honeypot Field (Hidden) -->
+                    <div class="honeypot-field" style="display:none;">
+                        <label for="honeypot">Leave this field empty</label>
+                        <input type="text" id="honeypot" name="honeypot" autocomplete="off">
+                    </div>
+
+                    <!-- Hidden Fields Auto-Filled with JS -->
+                    <input type="hidden" name="ip_address" id="ip_address">
+                    <input type="hidden" name="timestamp" id="timestamp">
+                    <input type="hidden" name="js_challenge" id="js_challenge">
+
+                    <!-- Google reCAPTCHA -->
+                    <div class="form-group mb-2">
+                        <div class="g-recaptcha" data-sitekey="6Le8E-QqAAAAAD4LJi0YgzguW4L6L4eSBqpwUyDf"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" name="submit">Submit</button>
+                    <button type="reset" class="btn btn-secondary" name="reset">Cancel</button>
                     </form>
+
+                    <!-- Load reCAPTCHA script -->
+                    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 				</div>
             </div>
         </div>
@@ -232,51 +240,31 @@
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/lazy-load.js"></script>
     <script type="text/javascript" src="js/script.js"></script>
+
+    <!-- Auto-fill hidden fields on page load -->
     <script>
-        // Set timestamp when page loads (to check if form is submitted too fast)
-        document.getElementById('timestamp').value = Date.now();
-    
-        // Set a JavaScript challenge (Bots usually don't execute JS)
-        document.getElementById('js_challenge').value = "human_verified";
-    
-        // Fetch and set IP address (for backend security)
-        fetch('https://api64.ipify.org?format=json')
-            .then(response => response.json())
-            .then(data => document.getElementById('ip_address').value = data.ip)
-            .catch(error => console.error("Error fetching IP:", error));
-    
-        function validateForm() {
-
-            // ✅ Check reCAPTCHA response in frontend
-            let recaptchaResponse = grecaptcha.getResponse();
-            if (recaptchaResponse.length === 0) {
-                alert("Please complete the CAPTCHA before submitting.");
-                return false;
-            }
+        window.onload = function () {
+            document.getElementById("timestamp").value = Date.now();
+            document.getElementById("js_challenge").value = "human_verified";
             
-            // Ensure Honeypot field is empty
-            if (document.getElementById("honeypot").value !== "") {
-                alert("Bot detected! Submission blocked.");
-                return false;
-            }
-    
-            // Check time delay (if submitted in <3 sec, block it)
-            let startTime = document.getElementById('timestamp').value;
-            let endTime = Date.now();
-            if ((endTime - startTime) < 3000) {
-                alert("Form submitted too quickly! Are you a bot?");
-                return false;
-            }
-    
-            // Ensure JavaScript challenge is present
-            if (document.getElementById("js_challenge").value !== "human_verified") {
-                alert("JavaScript validation failed. Bot detected.");
-                return false;
-            }
+            // Attempt to get IP address (optional, Worker can also detect via headers)
+            fetch("https://api.ipify.org?format=json")
+            .then(res => res.json())
+            .then(data => document.getElementById("ip_address").value = data.ip)
+            .catch(() => document.getElementById("ip_address").value = "unknown");
+        };
 
-            return true; // Allow submission
+        // Optional simple validation
+        function validateForm() {
+            const honeypot = document.getElementById("honeypot").value;
+            if (honeypot) {
+            alert("Bot detected!");
+            return false;
+            }
+            return true;
         }
     </script>
+
     
     <style>
         /* Move honeypot field off-screen */
