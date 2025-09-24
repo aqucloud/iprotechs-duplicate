@@ -1,0 +1,14 @@
+<svg id="Circle_Button_SIZE_MEDIUM_STATE_DEFAULT_STYLE_STYLE3_" data-name="Circle Button [SIZE=MEDIUM][STATE=DEFAULT][STYLE=STYLE3]" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <g id="Area_SIZE:MEDIUM_STATE:DEFAULT_STYLE:STYLE3_" data-name="Area [SIZE:MEDIUM][STATE:DEFAULT][STYLE:STYLE3]" fill="#fff" stroke="#d0d0d0" stroke-width="1">
+    <rect width="48" height="48" rx="24" stroke="none"/>
+    <rect x="0.5" y="0.5" width="47" height="47" rx="23.5" fill="none"/>
+  </g>
+  <g id="Icon_ICON_feather_linkedin_SIZE_MEDIUM_STATE_DEFAULT_STYLE_STYLE3_" data-name="Icon [ICON=feather/linkedin][SIZE=MEDIUM][STATE=DEFAULT][STYLE=STYLE3]" transform="translate(14 14)">
+    <rect id="Area_ICON:feather_linkedin_SIZE:MEDIUM_STATE:DEFAULT_STYLE:STYLE3_" data-name="Area [ICON:feather/linkedin][SIZE:MEDIUM][STATE:DEFAULT][STYLE:STYLE3]" width="20" height="20" fill="rgba(253,73,198,0.35)" opacity="0"/>
+    <g id="Icon" transform="translate(1.667 1.667)">
+      <path id="d3c8169f-73ed-43ec-bee9-43cd9e35bc91" d="M16,8a6,6,0,0,1,6,6v7H18V14a2,2,0,0,0-4,0v7H10V14A6,6,0,0,1,16,8Z" transform="translate(-3.667 -3.167)" fill="none" stroke="#1c2126" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      <rect id="_89c845e3-50c9-49d7-b455-0bfa1f1ee774" data-name="89c845e3-50c9-49d7-b455-0bfa1f1ee774" width="4" height="12" transform="translate(-1.667 5.833)" fill="none" stroke="#1c2126" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      <circle id="_89c11967-51a0-4daf-ba76-4db460353d12" data-name="89c11967-51a0-4daf-ba76-4db460353d12" cx="2" cy="2" r="2" transform="translate(-1.667 -1.167)" fill="none" stroke="#1c2126" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+    </g>
+  </g>
+</svg>

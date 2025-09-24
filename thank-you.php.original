@@ -1,0 +1,437 @@
+<?php 
+	use PHPMailer\PHPMailer\PHPMailer;
+	use PHPMailer\PHPMailer\SMTP;
+	use PHPMailer\PHPMailer\Exception;
+?>
+<?php
+
+	if(isset($_POST['submit'])){
+    $username = trim($_POST['yourname']);
+    $useremail = trim($_POST['youremail']);
+    $userphone = trim($_POST['yourphone']);
+    $usersubject = trim($_POST['yoursubject']);
+    $usermessage = trim($_POST['yourmessage']);
+    $honeypot = $_POST['honeypot'] ?? ''; // Honeypot field
+    $ip_address = $_POST['ip_address'] ?? $_SERVER['REMOTE_ADDR']; // IP Address
+    $timestamp = $_POST['timestamp'] ?? 0; // Submission timestamp
+    $js_challenge = $_POST['js_challenge'] ?? ''; // JavaScript challenge
+    $captcha = $_POST['g-recaptcha-response'] ?? '';
+
+    $secretKey = "6Le8E-QqAAAAADIgywfXI_0WBUBumNy0KaBqSTFG"; // reCaptcha secret key
+    $verifyResponse = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secretKey&response=$captcha&remoteip=$ip_address");
+    $responseData = json_decode($verifyResponse);
+    
+    if (!$responseData->success) {
+        die("reCAPTCHA validation failed.");
+    }
+
+    // Reject if Honeypot field is filled (Bot detected)
+    if (!empty($honeypot)) {
+        die("<script>alert('Bot detected! Form rejected.'); window.location='index.html';</script>");
+    }
+
+    // Check if form was submitted too quickly (Less than 3 sec)
+    if ((time() * 1000) - intval($timestamp) < 3000) {
+        die("<script>alert('Form submitted too fast! Possible bot attack.'); window.location='index.html';</script>");
+    }
+
+    // Validate JavaScript challenge
+    if ($js_challenge !== "human_verified") {
+        die("<script>alert('JavaScript validation failed. Possible bot detected!'); window.location='index.html';</script>");
+    }
+			
+			require_once __DIR__ . '/phpmailer/src/Exception.php';
+			require_once __DIR__ . '/phpmailer/src/PHPMailer.php';
+			require_once __DIR__ . '/phpmailer/src/SMTP.php';
+               
+			$message = "<div>
+  <table width='100' cellspacing='0' cellpadding='0' border='0' align='center'>
+    <tbody>
+      <tr>
+        <td align='center'>
+          <table style='border-top:#1f7dc1 solid 4px;' width='600' cellspacing='0' cellpadding='0' border='0'>
+            <tbody>
+              <tr>
+                <td style='text-align: center; padding-bottom:20px; padding-top: 15px;' align='center'>
+                  <a href='https://www.iprotechs.com/' target='_blank'>
+                    <img src='https://iprotechs.com/images/thankyou.jpg' alt='iprotechs' title='iprotechs' height='30' />
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td style='border-bottom:#000 solid 1px; ' align='center'>
+                  <table width='100%' border='0'>
+                    <tbody>
+                      <tr>
+                        <td style='padding:20px 0px 20px 25px;vertical-align:top;; font-family:Arial;'>
+                          <p style='padding-bottom:10px;font-family:Arial;font-size:14px'>Hi ".$username." ,</p>
+                          <p style='font-family:Arial;color: #000;font-size: 14px;text-align: left;padding:0px;'> Thank you visiting us @ iprotechs. </p>
+                          <p style='font-family:Arial;color: #000;font-size: 14px;text-align: left;padding: 8px 0 10px; line-height: 24px;'> We have received your request for Demo, Our tech team will connect you in next 24 hours to setup a meeting for Demo. <a href='https://www.iprotechs.com/' target='_blank' style='text-decoration: none;'>www.iprotechs.com</a>
+                          <p style='font-family:Arial;color: #000;font-size: 14px;text-align: left;padding:0px;'> For any other query you can write us on <a href='mailto:info@iprotechs.com'>info@iprotechs.com</a></p> 
+                          </p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style='padding:20px 25px 20px 25px;vertical-align:top;font-size:13pxfont-family:Arial;'>
+                          <p style='font-family:Arial; font-size:14px;'>Thanks again for connecting with us.</p>
+                          <p style='font-family:Arial; font-size:14px; line-height:20px;'>Regards, <br /> iprotechs </p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td style='padding:10px 25px 10px 25px;vertical-align:top;font-size:12pxfont-family:Arial;'>
+                  <p style='font-family:Arial;color: #000;font-size:12px;text-align: left;padding: 10px 10px 0px 10px;'>**This message is intended only for the person or entity to which it is addressed and may contain confidential and/or privileged information and is not a spam. If you have received this message in error, please notify the sender immediately and delete this message from your system ** </p>
+                </td>
+              </tr>
+              <tr>
+                <td>&nbsp;</td>
+              </tr>
+            </tbody>
+          </table>
+          <!--Footer Table starts here-->
+          <table width='700px' border='0'>
+            <tbody>
+              <tr>
+                <td valign='top'>
+                  <table width='100%' cellspacing='0' cellpadding='0' border='0'>
+                    <tbody>
+                      <tr>
+                        <td style='font-family:Arial;color: #000;font-size: 12px;padding: 8px 0 10px;line-height: 20px;text-align: center;font-weight: 500;letter-spacing:0px;padding:0px 0 10px;' align='center'>
+                          <a href='https://www.iprotechs.com/' target='_blank' style='text-decoration: none;color: #000;'>&#169; iprotechs </a> All Rights Reserved.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>";		
+			
+			
+								
+			$mail = new PHPMailer(true);
+			$mail->isSMTP();
+			$mail->Host = 'smtp.gmail.com';
+			$mail->SMTPAuth = true;
+			$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+			$mail->Port = 587;
+			$mail->Username = 'no-reply@iprotechs.com'; // YOUR gmail email
+			$mail->Password = 'haqw fftb otxl bfbp'; // YOUR gmail password
+			$mail->setFrom('info@iprotechs.com', 'Admin iProtechs');
+	                $mail->addAddress($useremail, $username);
+	//		$mail->addBCC('info@iprotechs.com', 'info');
+			$mail->IsHTML(true);
+			$mail->Subject = "Thank you for your Demo Request.";
+			$mail->Body = $message;
+			$mail->send();
+    		
+			
+			
+			$message3 = "<div>
+  <table width='100' cellspacing='0' cellpadding='0' border='0' align='center'>
+    <tbody>
+      <tr>
+        <td align='center'>
+          <table style='border-top:#1f7dc1 solid 4px;' width='600' cellspacing='0' cellpadding='0' border='0'>
+            <tbody>
+              <tr>
+                <td style='text-align: center; padding-bottom:20px; padding-top: 15px;' align='center'>
+                  <a href='https://www.iprotechs.com/' target='_blank'>
+                    <img src='https://www.iprotechs.com/images/iprotechs-02.jpg' alt='iprotechs' title='iprotechs' height='30' />
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td style='border-bottom:#000 solid 1px; ' align='center'>
+                  <table width='100%' border='0'>
+                    <tbody>
+                      <tr>
+                        <td style='padding:20px 0px 20px 25px;vertical-align:top;; font-family:Arial;'>
+                          <p style='padding-bottom:10px;font-family:Arial;font-size:14px'>Dear Admin,</p>
+                          <p style='font-family:Arial;color: #000;font-size: 14px;text-align: left;padding:0px;'> We have an demo inquiry. Below are the inquiry details</p> 
+                        </td>
+                      </tr>
+						 <tr>
+							 <td style='padding-left:20px; padding-right:20px;'>
+							 <table width='100%' border='1' bordercolor='#89919a' style='border:solid 1px e5eaef; width: 100%;border-collapse: collapse;'>
+  <tbody>
+    <tr>
+      <td width='50%' valign='top' style='font-family:Arial;color: #000;font-size: 14px;text-align: left; padding:10px; background: #e5eaef;'>Name</td>
+      <td width='50%' valign='top' style='font-family:Arial;color: #000;font-size: 14px;text-align: left; padding:10px; background: #ffffff;'>".$username." </td>
+    </tr>
+    <tr>
+      <td width='50%' valign='top' style='font-family:Arial;color: #000;font-size: 14px;text-align: left; padding:10px; background: #e5eaef;'>Email</td>
+      <td width='50%' valign='top' style='font-family:Arial;color: #000;font-size: 14px;text-align: left; padding:10px; background: #ffffff;'>".$useremail." </td>
+    </tr>
+    <tr>
+      <td valign='top' style='font-family:Arial;color: #000;font-size: 14px;text-align: left; padding:10px; background: #e5eaef;'>Mobile</td>
+      <td valign='top' style='font-family:Arial;color: #000;font-size: 14px;text-align: left; padding:10px; background: #ffffff;'>".$userphone." </td>
+    </tr>
+    <tr>
+      <td valign='top' style='font-family:Arial;color: #000;font-size: 14px;text-align: left; padding:10px; background: #e5eaef;'>Subject</td>
+      <td valign='top' style='font-family:Arial;color: #000;font-size: 14px;text-align: left; padding:10px; background: #ffffff;'>".$usersubject." </td>
+    </tr>
+    <tr>
+      <td valign='top' style='font-family:Arial;color: #000;font-size: 14px;text-align: left; padding:10px; background: #e5eaef;'>Message</td>
+      <td valign='top' style='font-family:Arial;color: #000;font-size: 14px;text-align: left; padding:10px; background: #ffffff;'>".$usermessage." </td>
+    </tr>
+    <tr>
+      <td valign='top' style='font-family:Arial;color: #000;font-size: 14px;text-align: left; padding:10px; background: #E5EAEF;'>IP address</td>
+      <td valign='top' style='font-family:Arial;color: #000;font-size: 14px;text-align: left; padding:10px; background: #FFFFFF;'>".$ip_address." </td>
+    </tr>
+  </tbody>
+</table>
+
+							 </td>
+						</tr>
+                      <tr>
+                        <td style='padding:20px 25px 20px 25px;vertical-align:top;font-size:13pxfont-family:Arial;'>
+                          <p style='font-family:Arial; font-size:14px;'>Thanks again for connecting with us.</p>
+                          <p style='font-family:Arial; font-size:14px; line-height:20px;'>Regards, <br /> iprotechs </p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td style='padding:10px 25px 10px 25px;vertical-align:top;font-size:12pxfont-family:Arial;'>
+                  <p style='font-family:Arial;color: #000;font-size:12px;text-align: left;padding: 10px 10px 0px 10px;'>**This message is intended only for the person or entity to which it is addressed and may contain confidential and/or privileged information and is not a spam. If you have received this message in error, please notify the sender immediately and delete this message from your system ** </p>
+                </td>
+              </tr>
+              <tr>
+                <td>&nbsp;</td>
+              </tr>
+            </tbody>
+          </table>
+          <!--Footer Table starts here-->
+          <table width='700px' border='0'>
+            <tbody>
+              <tr>
+                <td valign='top'>
+                  <table width='100%' cellspacing='0' cellpadding='0' border='0'>
+                    <tbody>
+                      <tr>
+                        <td style='font-family:Arial;color: #000;font-size: 12px;padding: 8px 0 10px;line-height: 20px;text-align: center;font-weight: 500;letter-spacing:0px;padding:0px 0 10px;' align='center'>
+                          <a href='https://www.iprotechs.com/' target='_blank' style='text-decoration: none;color: #000;'>&#169; iprotechs </a> All Rights Reserved.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>";
+			
+			$mail3 = new PHPMailer(true);
+			$mail3->isSMTP();
+			$mail3->Host = 'smtp.gmail.com';
+			$mail3->SMTPAuth = true;
+			$mail3->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+			$mail3->Port = 587;
+			$mail3->Username = 'no-reply@iprotechs.com'; // YOUR gmail email
+			$mail3->Password = 'haqw fftb otxl bfbp'; // YOUR gmail password
+			$mail3->setFrom('info@iprotechs.com', 'Admin iProtechs');
+			$mail3->addAddress('info@iprotechs.com', 'Admin iProtechs');
+			$mail3->addReplyTo('info@iprotechs.com', 'Admin iProtechs'); // to set the reply to
+			// Setting the email content
+			$mail3->IsHTML(true);
+			$mail3->Subject = "You have a demo request from $username!";
+			$mail3->Body = $message3;
+			$mail3->send();
+		/*} */
+	}
+?>	
+
+
+ <!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="meta description">
+    <meta name="author" content="IProtechs">
+	<link rel="shortcut icon" href="images/favicon.ico">
+    <title>:: Thank you ::</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css"> 
+</head>
+
+  <body> 
+    
+	  
+	<header class="inner-page-header">
+        <div class="container">
+            <div class="header-inner-wrapper">
+                
+                <a class="site-logo" href="index.html">
+                    <picture>
+                        <source type="image/webp" srcset="images/iprotechs-02.jpg">
+                        <source type="image/jpeg" srcset="images/iprotechs-02.jpg">
+                        <img src="images/iprotechs-02.jpg" alt="Logo" title="iprotechs" />
+                    </picture>
+                </a>
+                <ul class="site-menu ms-auto">
+                    <a href="javascript:;" class="site-menu-close">
+                        <span>
+                            <picture>
+                                <source type="image/webp" srcset="images/close.svg">
+                                <source type="image/jpeg" srcset="images/close.svg">
+                                <img src="images/close.svg" alt="Close" title="Close" />
+                            </picture>
+                        </span>
+                    </a>
+					<li class="inner-m-item"> <a href="https://www.iprotechs.com/" class="menu-link">Home</a> </li>
+                    <li class="inner-m-item">
+                        <a href="oracle-erp-cloud-and-ebs.html" class="menu-link">Oracle ERP Cloud &amp; EBS</a>
+                    </li>
+                    <li class="inner-m-item">
+                        <a href="javascript:;" class="menu-link">Our Services</a>
+                        <ul class="dropdown-item-list">
+            <li> <a href="mobile-app-development.html" class="dropdown-menu-link">Mobile App Development</a> </li>
+             <li> <a href="web-development.html" class="dropdown-menu-link">Web Development</a> </li>
+            <li> <a href="product-development.html" class="dropdown-menu-link">Product Development</a> </li>
+			  <li> <a href="devops-aws.html" class="dropdown-menu-link">DevOPS - AWS</a> </li>
+          </ul>
+                    </li>
+                    <li class="inner-m-item">
+                        <a href="career.html" class="menu-link">Careers</a>
+                    </li>
+                    <li class="inner-m-item">
+                        <a href="inquiries.html" class="menu-link">Contact Us</a>
+                    </li>
+                </ul>
+                <div class="mobile-menu-click ms-auto">
+                    <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="https://www.w3.org/2000/svg">
+                        <path d="M4 18L20 18" stroke="#ffffff" stroke-width="2" stroke-linecap="round" />
+                        <path d="M4 12L20 12" stroke="#ffffff" stroke-width="2" stroke-linecap="round" />
+                        <path d="M4 6L20 6" stroke="#ffffff" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </header>
+     
+     
+    <section class="inner-page-banner" id="contact-us">
+	  <picture class="lazy-image" data-loaded="false">
+            <source type="image/webp" data-srcset="https://www.iprotechs.com/images/contact_us.jpg" data-sizes="auto" srcset="">
+            <source type="image/jpeg" data-srcset="https://www.iprotechs.com/images/contact_us.jpg" data-sizes="auto" srcset="">
+            <img data-src="https://www.iprotechs.com/images/contact_us.jpg" alt="Description of the image" loading="lazy" class="w-100">
+        </picture>
+	  </section>
+    <section class="section-home-about-text">
+        
+        <div class="container content">
+             <div class="text-center thankyoupage">
+			<h1>Thank you for contacting iProtechs</h1>
+			<h2>Our team will get in touch with you in next 24 to 48 hours.</h2> 
+			</div>
+        </div>
+    </section>
+     
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="container">
+                <div class="row gx-lg-5">
+                    <div class="col-lg-4">
+                        <a href="https://www.iprotechs.com/" class="footer-logo mb-5">
+                            <picture>
+                                <source type="image/webp" srcset="images/iprotechs-02.jpg">
+                                <source type="image/jpeg" srcset="images/iprotechs-02.jpg">
+                                <img src="images/iprotechs-02.jpg" alt="" class="img-responsive" />
+                            </picture>
+                        </a>
+                        <h3 class="footer-heading">Address</h3>
+                        <div class="address">
+                            
+                            <h5>India Office</h5>
+                            <p>H.NO. 8-2-248/B/37, Journalists colony, Road No3, Banjara Hills Hyderabad-500034
+                            </p>
+                            <p>India Phone: +91-40-48503866</p>
+						<p>USA Phone:  (978) 435-0603</P>
+                             <p>Email: <a href="mailto:info@iprotechs.com" class="text-black">info@iprotechs.com</a></p>
+                        </div>
+                        <ul class="social-media-link">
+                            <li>
+                                <a href="https://www.facebook.com/iPROTECHS/" class="">
+                                    <i class="icons"><img src="images/facebook-icon.svg" alt=""/></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://www.linkedin.com/company/iprotechs/" class="">
+                                    <i class="icons"><img src="images/linkedin-icon.svg" alt=""/></i>
+                                </a>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                    <div class="col-lg-4">
+                        <h3 class="footer-heading">Quick Link</h3>
+                        <ul class="quick-link">
+                            <li><a href="mobile-app-development.html">Mobile App Development</a></li>
+                            <li> <a href="web-development.html">Web Development</a> </li>
+                            <li><a href="product-development.html">Product Development</a></li>
+							<li><a href="devops-aws.html">DevOPS - AWS</a></li>
+                            <li><a href="career.html">Careers</a></li>
+                            <li><a href="inquiries.html">Contact Us</a></li>
+                        </ul>
+
+
+
+                    </div>
+                    <div class="col-lg-4">
+                        <h3 class="footer-heading">Location</h3>
+                        <div class="address">
+                            <p>Hyderabad Office Site Map</p>
+                        </div>
+                        <div class="text-center">
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d487255.8213733279!2d77.87065657343751!3d17.42684530000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb90b5a0b00001%3A0x49aa237c9db416f5!2siPROTECHS!5e0!3m2!1sen!2sus!4v1699506785834!5m2!1sen!2sus"
+                                width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <p>©<span id="copyright">
+                                2016-<script>document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))</script>
+                            </span>. iProtechs. All Rights Reserved.</p>
+                    </div>
+                    <div class="col-lg-6 text-end">
+                        <p>Mail: <a href="mailto:info@iprotechs.com" class="text-white">info@iprotechs.com</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+	 
+	  
+	<script type="text/javascript" src="js/jquery-3.7.1.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/lazy-load.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+  </body>
+</html>
+
+
