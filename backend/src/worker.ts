@@ -10,16 +10,18 @@ export default {
     }
 
     try {
-        const formData = await req.formData();
-        const username = formData.get("yourname")?.toString() || "";
-        const useremail = formData.get("youremail")?.toString() || "";
-        const userphone = formData.get("yourphone")?.toString() || "";
-        const usersubject = formData.get("yoursubject")?.toString() || "";
-        const usermessage = formData.get("yourmessage")?.toString() || "";
-        const honeypot = formData.get("honeypot")?.toString() || "";
-        const timestamp = parseInt(formData.get("timestamp")?.toString() || "0");
-        const jsChallenge = formData.get("js_challenge")?.toString() || "";
-        const captcha = formData.get("g-recaptcha-response")?.toString() || "";
+        const text = await req.text();
+        const params = new URLSearchParams(text);
+
+        const username = params.get("yourname") || "";
+        const useremail = params.get("youremail") || "";
+        const userphone = params.get("yourphone") || "";
+        const usersubject = params.get("yoursubject") || "";
+        const usermessage = params.get("yourmessage") || "";
+        const honeypot = params.get("honeypot") || "";
+        const timestamp = parseInt(params.get("timestamp") || "0");
+        const jsChallenge = params.get("js_challenge") || "";
+        const captcha = params.get("g-recaptcha-response") || "";
         const ip = req.headers.get("cf-connecting-ip") || "unknown";
 
         env.RECAPTCHA_SECRET = `6Le8E-QqAAAAADIgywfXI_0WBUBumNy0KaBqSTFG`;
