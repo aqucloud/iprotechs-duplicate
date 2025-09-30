@@ -44,7 +44,7 @@ export const contact: ExportedHandlerFetchHandler<Env> = async (request, environ
 				method: "POST",
 				headers: { "Content-Type": "application/x-www-form-urlencoded" },
 				body: new URLSearchParams({
-					secret: environment.RECAPTCHA_SECRET_KEY,
+					secret: '6Le8E-QqAAAAADIgywfXI_0WBUBumNy0KaBqSTFG',
 					response: captcha,
 					remoteip: ip
 				})
