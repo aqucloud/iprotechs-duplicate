@@ -4,7 +4,7 @@ import { EmailMessage } from 'cloudflare:email';
 //////////////////////////////
 //////// Contact
 //////////////////////////////
-export const contact: ExportedHandlerFetchHandler<Env> = async (request, environment, context) => {
+export const contact: ExportedHandlerFetchHandler<Env> = async (request, environment) => {
 	try {
 		const contentType = request.headers.get("content-type") || "";
 

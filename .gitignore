@@ -1,3 +1,4 @@
 # Ignore backend node modules
 /backend/node_modules/
 /backend/dist/
+/backend/.dev.vars/
