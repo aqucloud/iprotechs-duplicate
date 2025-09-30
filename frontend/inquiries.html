@@ -10,7 +10,6 @@
     <title>:: Contact Us ::</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
-	<script src="https://www.google.com/recaptcha/api.js"></script>
 </head>
 
 <body>
@@ -138,17 +137,10 @@
                     <input type="hidden" name="timestamp" id="timestamp">
                     <input type="hidden" name="js_challenge" id="js_challenge">
 
-                    <!-- Google reCAPTCHA -->
-                    <div class="form-group mb-2">
-                        <div class="g-recaptcha" data-sitekey="6Le8E-QqAAAAAD4LJi0YgzguW4L6L4eSBqpwUyDf"></div>
-                    </div>
 
                     <button type="submit" class="btn btn-primary" name="submit">Submit</button>
                     <button type="reset" class="btn btn-secondary" name="reset">Cancel</button>
                     </form>
-
-                    <!-- Load reCAPTCHA script -->
-                    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 				</div>
             </div>
         </div>
@@ -310,22 +302,6 @@
             return; // stop here
             }
 
-            // Get reCAPTCHA token
-            const captchaToken = grecaptcha.getResponse();
-            if (!captchaToken) {
-                alert("Please complete the reCAPTCHA");
-                return; // stop if user didn't check captcha
-            }
-
-            // Add token to hidden field
-            document.getElementById("g-recaptcha-response")?.remove(); // remove old if any
-            const input = document.createElement("input");
-            input.type = "hidden";
-            input.name = "g-recaptcha-response";
-            input.id = "g-recaptcha-response";
-            input.value = captchaToken;
-            form.appendChild(input);
-
             // Collect form data
             const formData = new FormData(form);
 
@@ -340,7 +316,6 @@
                 if (data.success) {
                     alert("Form submitted successfully!");
                     form.reset();
-                    grecaptcha.reset();
                     // Redirecting to thank-you page
                     window.location.href = "thank-you.html";
                 } else {

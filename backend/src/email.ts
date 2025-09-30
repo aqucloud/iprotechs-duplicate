@@ -24,54 +24,54 @@ export const contact: ExportedHandlerFetchHandler<Env> = async (request, environ
 		}
 		
 		// Extract the reCAPTCHA token and client IP
-		const captcha = formData["g-recaptcha-response"] || "";
+		// const captcha = formData["g-recaptcha-response"] || "";
 		const ip = request.headers.get("cf-connecting-ip") || "unknown";
 
 		// Ensure a token was provided
-		if (!captcha) {
-			return new Response(JSON.stringify({
-				success: false,
-				message: "No reCAPTCHA token provided"
-			}), {
-				status: 400,
-				headers: { "Content-Type": "application/json" }
-			});
-		}
+		// if (!captcha) {
+		// 	return new Response(JSON.stringify({
+		// 		success: false,
+		// 		message: "No reCAPTCHA token provided"
+		// 	}), {
+		// 		status: 400,
+		// 		headers: { "Content-Type": "application/json" }
+		// 	});
+		// }
 
-		try {
-			// Verify the token with Google
-			const captchaRes = await fetch("https://www.google.com/recaptcha/api/siteverify", {
-				method: "POST",
-				headers: { "Content-Type": "application/x-www-form-urlencoded" },
-				body: new URLSearchParams({
-					secret: '6Le8E-QqAAAAADIgywfXI_0WBUBumNy0KaBqSTFG',
-					response: captcha,
-					remoteip: ip
-				})
-			});
+		// try {
+		// 	// Verify the token with Google
+		// 	const captchaRes = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+		// 		method: "POST",
+		// 		headers: { "Content-Type": "application/x-www-form-urlencoded" },
+		// 		body: new URLSearchParams({
+		// 			secret: '6Le8E-QqAAAAADIgywfXI_0WBUBumNy0KaBqSTFG',
+		// 			response: captcha,
+		// 			remoteip: ip
+		// 		})
+		// 	});
 
-			// Parse the JSON response
-			const captchaData: RecaptchaResponse = await captchaRes.json();
+		// 	// Parse the JSON response
+		// 	const captchaData: RecaptchaResponse = await captchaRes.json();
 
-			if (!captchaData.success) {
-				return new Response(JSON.stringify({
-					success: false,
-					message: "reCAPTCHA validation failed"
-				}), {
-					status: 400,
-					headers: { "Content-Type": "application/json" }
-				});
-			}
-		} catch (err) {
-			console.error("reCAPTCHA verification error:", err);
-			return new Response(JSON.stringify({
-				success: false,
-				message: "Error verifying reCAPTCHA"
-			}), {
-				status: 500,
-				headers: { "Content-Type": "application/json" }
-			});
-		}
+		// 	if (!captchaData.success) {
+		// 		return new Response(JSON.stringify({
+		// 			success: false,
+		// 			message: "reCAPTCHA validation failed"
+		// 		}), {
+		// 			status: 400,
+		// 			headers: { "Content-Type": "application/json" }
+		// 		});
+		// 	}
+		// } catch (err) {
+		// 	console.error("reCAPTCHA verification error:", err);
+		// 	return new Response(JSON.stringify({
+		// 		success: false,
+		// 		message: "Error verifying reCAPTCHA"
+		// 	}), {
+		// 		status: 500,
+		// 		headers: { "Content-Type": "application/json" }
+		// 	});
+		// }
 
 		// Prepare email bodies
 		const userEmailBody = getUserEmailBody(formData);
