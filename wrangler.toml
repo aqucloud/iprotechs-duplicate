@@ -1,0 +1,8 @@
+name = "iprotechs"
+main = "./backend/dist/index.js"
+send_email = [{name = "SEB"}]
+compatibility_date = "2025-07-01"
+
+[assets]
+directory = "./frontend"
+not_found_handling = "404-page"

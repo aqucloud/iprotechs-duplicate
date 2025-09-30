@@ -1,0 +1,15 @@
+{
+	"name": "iprotechs",
+	"version": "1.0.0",
+	"type": "module",
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"build": "npx wrangler types && tsc"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20250927.0",
+		"tsx": "4.20.3",
+		"typescript": "5.8.3",
+		"wrangler": "4.40.2"
+	}
+}
