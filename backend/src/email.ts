@@ -78,8 +78,8 @@ export const contact: ExportedHandlerFetchHandler<Env> = async (request, environ
 		const adminEmailBody = getAdminEmailBody(formData);
 
 		// Send emails using your existing sendEmail function
-		await sendEmail(environment, "info@iprotechs.com", formData.email, "Thank you for your Demo Request", userEmailBody);
-		await sendEmail(environment, "info@iprotechs.com", "info@iprotechs.com", `You have a demo request from ${formData.name}!`, adminEmailBody);
+		// await sendEmail(environment, "info@iprotechs.com", formData.email, "Thank you for your Demo Request", userEmailBody);
+		await sendEmail(environment, formData.email, "info@iprotechs.com", `You have a demo request from ${formData.name}!`, adminEmailBody);
 
 		return new Response(JSON.stringify({ success: true, message: "Request submitted successfully" }), {
 			headers: { "Content-Type": "application/json" }
@@ -102,7 +102,7 @@ interface RecaptchaResponse {
 //////////////////////////////
 const sendEmail = async (environment: Env, fromEmail: string, toEmail: string, subject: string, body: string) => {
 	// RAW RFC 5322 Message 📧;
-	const rawMessage = [`From: <${fromEmail}>`, `To: ${toEmail}`, `Reply-To: ${fromEmail}`, `Date: ${new Date().toUTCString()}`, `Message-ID: <${crypto.randomUUID()}@rutvikkaturi.com>`, `Subject: ${subject}`, '', body].join('\n');
+	const rawMessage = [`From: <${fromEmail}>`, `To: ${toEmail}`, `Reply-To: ${fromEmail}`, `Date: ${new Date().toUTCString()}`, `Message-ID: <${crypto.randomUUID()}@iprotechs.com>`, `Subject: ${subject}`, '', body].join('\n');
 	const emailMessage = new EmailMessage(fromEmail, toEmail, rawMessage);
 	await environment.SEB.send(emailMessage);
 };
