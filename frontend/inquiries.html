@@ -242,58 +242,61 @@
             .catch(() => document.getElementById("ip_address").value = "unknown");
         };
 
-        const form = document.getElementById("emailForm");
+        document.addEventListener("DOMContentLoaded", () => {
 
-        // Client-side validation
-        function validateForm() {
-            const name = form.querySelector("#name").value.trim();
-            const email = form.querySelector("#email").value.trim();
-            const phone = form.querySelector("#mobile").value.trim();
-            const subject = form.querySelector("#subject").value.trim();
-            const message = form.querySelector("#message").value.trim();
-        
-            // Basic required checks
-            if (!name || !email || !phone || !subject || !message) {
-                alert("All fields are required.");
-                return false;
-            }
+            // Grab the form safely after DOM is loaded
+            const form = document.getElementById("emailForm");
 
-            return true; // valid
-        }
-
-        // Handle submit
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault(); // stop normal submission
-
-            if (!validateForm()) {
-            console.log("Validation failed → stopping submission");
-            return; // stop here
-            }
-
-            // Collect form data
-            const formData = new FormData(form);
-
-            try {
-                const res = await fetch("/api/email/contact", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: new URLSearchParams(formData),
-                });
-
-                const data = await res.json();
-                if (data.success) {
-                    alert("Form submitted successfully!");
-                    form.reset();
-                    // Redirecting to thank-you page
-                    window.location.href = "thank-you.html";
-                } else {
-                    alert("Error: " + (data.message || "Something went wrong."));
+            // Client-side validation
+            function validateForm() {
+                const name = form.querySelector("#name").value.trim();
+                const email = form.querySelector("#email").value.trim();
+                const phone = form.querySelector("#mobile").value.trim();
+                const subject = form.querySelector("#subject").value.trim();
+                const message = form.querySelector("#message").value.trim();
+            
+                // Basic required checks
+                if (!name || !email || !phone || !subject || !message) {
+                    alert("All fields are required.");
+                    return false;
                 }
-            } catch (err) {
-                console.error("Submission failed:", err);
-                alert("Network error — please try again.");
+
+                return true; // valid
             }
-        });
+        
+            // Handle submit
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault(); // stop normal submission
+
+                if (!validateForm()) {
+                console.log("Validation failed → stopping submission");
+                return; // stop here
+                }
+
+                // Collect form data
+                const formData = new FormData(form);
+
+                try {
+                    const res = await fetch("/api/email/contact", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: new URLSearchParams(formData),
+                    });
+
+                    const data = await res.json();
+                    if (data.success) {
+                        alert("Form submitted successfully!");
+                        // Redirecting to thank-you page
+                        window.location.href = "thank-you.html";
+                    } else {
+                        alert("Error: " + (data.message || "Something went wrong."));
+                    }
+                } catch (err) {
+                    console.error("Submission failed:", err);
+                    alert("Network error — please try again.");
+                }
+            });
+        })
     </script>
 
 </body>
