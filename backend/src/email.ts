@@ -29,10 +29,16 @@ export const contact: ExportedHandlerFetchHandler<Env> = async (request, environ
 		// Prepare email bodies
 		const userEmailBody = getUserEmailBody(formData);
 		const adminEmailBody = getAdminEmailBody(formData, ip);
+        const userEmail = formData.email;
 
 		// Send emails using your existing sendEmail function
-		await sendEmail(environment, "info@iprotechs.com", formData.email, "Thank you for your Demo Request", userEmailBody);
-		await sendEmail(environment, formData.email, "info@iprotechs.com", `You have a demo request from ${formData.name}!`, adminEmailBody);
+
+		// From info@iprotechs.com to user email
+		if(userEmail != 'admin@iprotechs.com' && userEmail != 'info@iprotechs.com') {
+			await sendEmail(environment, "info@iprotechs.com", userEmail, "Thank you for your Demo Request", userEmailBody);
+		}
+		// From info@iprotechs.com to admin@iprotechs.com
+		await sendEmail(environment, "info@iprotechs.com", "admin@iprotechs.com", `You have a demo request from ${formData.name}!`, adminEmailBody);
 
 		return new Response(JSON.stringify({ success: true, message: "Request submitted successfully" }), {
 			headers: { "Content-Type": "application/json" }
