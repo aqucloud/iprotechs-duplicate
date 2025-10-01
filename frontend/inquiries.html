@@ -235,10 +235,6 @@
 
     <script>
         window.onload = function () {
-            // Auto-fill hidden fields
-            document.getElementById("timestamp").value = Date.now();
-            document.getElementById("js_challenge").value = "human_verified";
-
             // Get IP (optional — your Worker can also detect via cf-connecting-ip header)
             fetch("https://api.ipify.org?format=json")
             .then(res => res.json())
@@ -255,38 +251,10 @@
             const phone = form.querySelector("#mobile").value.trim();
             const subject = form.querySelector("#subject").value.trim();
             const message = form.querySelector("#message").value.trim();
-            const honeypot = form.querySelector("#honeypot").value;
-            const timestamp = parseInt(form.querySelector("#timestamp").value || "0");
-            const jsChallenge = form.querySelector("#js_challenge").value;
-
+        
             // Basic required checks
             if (!name || !email || !phone || !subject || !message) {
                 alert("All fields are required.");
-                return false;
-            }
-
-            // Honeypot check
-            if (honeypot) {
-                alert("Bot detected!");
-                return false;
-            }
-
-            // Quick submission check (must wait at least 3s)
-            if (Date.now() - timestamp < 3000) {
-                alert("Form submitted too quickly. Please try again.");
-                return false;
-            }
-
-            // JS challenge check
-            if (jsChallenge !== "human_verified") {
-                alert("JavaScript challenge failed.");
-                return false;
-            }
-
-            // Optional: phone regex check
-            const phonePattern = /^\+?[0-9]{7,15}$/;
-            if (!phonePattern.test(phone)) {
-                alert("Invalid phone number.");
                 return false;
             }
 
@@ -328,15 +296,6 @@
         });
     </script>
 
-    <style>
-        /* Move honeypot field off-screen */
-        .honeypot-field {
-            position: absolute;
-            left: -9999px;
-            top: -9999px;
-            opacity: 0;
-        }
-    </style>
 </body>
 
 </html>
