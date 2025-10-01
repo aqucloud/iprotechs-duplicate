@@ -34,11 +34,9 @@ export const contact: ExportedHandlerFetchHandler<Env> = async (request, environ
 		// Send emails using your existing sendEmail function
 
 		// From info@iprotechs.com to user email
-		// if(userEmail != 'admin@iprotechs.com' && userEmail != 'info@iprotechs.com') {
-		// 	await sendEmail(environment, "info@iprotechs.com", userEmail, "Thank you for your Demo Request", userEmailBody);
-		// }
+		await sendEmail(environment, userEmail, 'Thank you for your Demo Request', userEmailBody, 'info@iprotechs.com');
 		// From info@iprotechs.com to admin@iprotechs.com
-		await sendEmail(environment, "info@iprotechs.com", "admin@iprotechs.com", `You have a demo request from ${formData.name}!`, adminEmailBody);
+		await sendEmail(environment, "admin@iprotechs.com", `You have a demo request from ${formData.name}!`, adminEmailBody, formData.emai);
 
 		return new Response(JSON.stringify({ success: true, message: "Request submitted successfully" }), {
 			headers: { "Content-Type": "application/json" }
@@ -54,12 +52,13 @@ export const contact: ExportedHandlerFetchHandler<Env> = async (request, environ
 //////////////////////////////
 //////// Email Helper
 //////////////////////////////
-const sendEmail = async (environment: Env, fromEmail: string, toEmail: string, subject: string, body: string) => {
+const sendEmail = async (environment: Env, toEmail: string, subject: string, body: string, replyTo?: string) => {
+	const fromEmail = 'info@iprotechs.com';
 	// RAW RFC 5322 Message 📧;
 	const rawMessage = [
-		`From: <${fromEmail}>`, 
+		`From: ${fromEmail}`, 
 		`To: ${toEmail}`, 
-		`Reply-To: ${fromEmail}`, 
+		`Reply-To: ${replyTo}`, 
 		`Date: ${new Date().toUTCString()}`, 
 		`Message-ID: <${crypto.randomUUID()}@iprotechs.com>`, 
 		`Subject: ${subject}`, 
