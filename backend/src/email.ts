@@ -34,9 +34,9 @@ export const contact: ExportedHandlerFetchHandler<Env> = async (request, environ
 		// Send emails using your existing sendEmail function
 
 		// From info@iprotechs.com to user email
-		if(userEmail != 'admin@iprotechs.com' && userEmail != 'info@iprotechs.com') {
-			await sendEmail(environment, "info@iprotechs.com", userEmail, "Thank you for your Demo Request", userEmailBody);
-		}
+		// if(userEmail != 'admin@iprotechs.com' && userEmail != 'info@iprotechs.com') {
+		// 	await sendEmail(environment, "info@iprotechs.com", userEmail, "Thank you for your Demo Request", userEmailBody);
+		// }
 		// From info@iprotechs.com to admin@iprotechs.com
 		await sendEmail(environment, "info@iprotechs.com", "admin@iprotechs.com", `You have a demo request from ${formData.name}!`, adminEmailBody);
 
